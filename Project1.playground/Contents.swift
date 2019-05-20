@@ -118,47 +118,72 @@ var teamRaptor: [[String: String]] = []
 var teamShark: [[String: String]] = []
 var teams = [teamDragon, teamRaptor, teamShark]
 
+// Sort players by heights (roughly)
+func isTall(player: [String: String], group: [[String: String]]) -> Int {
+    var index = 0
+    guard let heightString = player["height"], let playerHeight = Double(heightString) else { return 0 }
+    for member in group {
+        guard let heightString = member["height"], let memberHeight = Double(heightString) else { return 0 }
+        if playerHeight < memberHeight {
+            index += 1
+        }
+    }
+    return index
+}
+
 // Add all experienced players to experiencedPlayers and all inexperienced players to inexperiencedPlayers
 for player in league {
     if player["experience"] == "YES" {
-        experiencedPlayers.append(player)
+        let index = isTall(player: player, group: experiencedPlayers)
+        experiencedPlayers.insert(player, at: index)
     } else {
-        inexperiencedPlayers.append(player)
+        let index = isTall(player: player, group: inexperiencedPlayers)
+        inexperiencedPlayers.insert(player, at: index)
     }
 }
 
-// Divide experienced players
+// Divide experienced players, tallest to Dragons shortest to Sharks
 while experiencedPlayers.count >= teams.count {
     teamDragon.append(experiencedPlayers.remove(at: 0))
     teamRaptor.append(experiencedPlayers.remove(at: 0))
     teamShark.append(experiencedPlayers.remove(at: 0))
 }
 
-// Divide inexperienced players
+// Divide inexperienced players, tallest to Sharks shortest to dragons
 while inexperiencedPlayers.count >= teams.count {
-    teamDragon.append(inexperiencedPlayers.remove(at: 0))
-    teamRaptor.append(inexperiencedPlayers.remove(at: 0))
     teamShark.append(inexperiencedPlayers.remove(at: 0))
+    teamRaptor.append(inexperiencedPlayers.remove(at: 0))
+    teamDragon.append(inexperiencedPlayers.remove(at: 0))
 }
 
 // Take teamName, team, and date of first practice and prints the letters to the console.
 func printTeam(teamName: String, team: [[String: String]], date: String) {
+    let leadingFill = 30
+    let trailingFill = 60
     var titleLine = ""
-    for _ in 1...30 {
+    for _ in 1...leadingFill {
         titleLine += "-"
     }
     titleLine += "Team \(teamName)"
-    for _ in 1...60 {
+    for _ in 1...trailingFill {
         titleLine += "-"
     }
     print(titleLine)
     for member in team {
-        guard let name = member["name"], let height = member["height"], let guardians = member["guardians"] else { return }
+        guard let name = member["name"], let guardians = member["guardians"] else { return }
         print("To: \(guardians), Your child, \(name), from Team \(teamName) will attend their first team practice on \(date)")
     }
+}
+
+func printHeights(teamName: String, team: [[String: String]]) {
+    var teamHeightsTotal: Double = 0
     
-//    figure out height here
-    
+    for member in team {
+        guard let height = member["height"], let unwrappedHeight = Double(height) else { return }
+        teamHeightsTotal += unwrappedHeight
+    }
+    let averageHeight = teamHeightsTotal / Double(team.count)
+    print("\(teamName) average height: \(averageHeight)")
 }
 
 // Call printTeam for each team with the appropriate date and name of the team
@@ -166,36 +191,20 @@ printTeam(teamName: "Sharks", team: teamShark, date: "March 17, 3pm")
 printTeam(teamName: "Dragons", team: teamDragon, date: "March 17, 1pm")
 printTeam(teamName: "Raptors", team: teamRaptor, date: "March 18, 1pm")
 
+// Print heights titleLine
+let leadingFill = 30
+let trailingFill = 60
+var heightsTitleLine = ""
 
+for _ in 1...leadingFill {
+    heightsTitleLine += "-"
+}
+heightsTitleLine += "Team Heights"
+for _ in 1...trailingFill {
+    heightsTitleLine += "-"
+}
+print(heightsTitleLine)
 
-
-
-
-
-
-
-
-
-
-//var playersByHeight: [[[String: String]: Int]] = []
-
-//for player in league {
-//    var comparableHeight = 0
-//    if let unwrappedHeight = player["height"] {
-//        comparableHeight = Int(unwrappedHeight) ?? 0
-//        var index = 0
-//
-//        for (key, value) in playersByHeight {
-//            if comparableHeight >= value {
-//                index += 1
-//            }
-//            playersByHeight.insert(height, at: index)
-//            index = 0
-//        }
-//    }
-//    print(comparableHeight)
-//}
-
-
-
-//print(playersByHeight[player])
+printHeights(teamName: "Sharks", team: teamShark)
+printHeights(teamName: "Dragons", team: teamDragon)
+printHeights(teamName: "Raptors", team: teamRaptor)
