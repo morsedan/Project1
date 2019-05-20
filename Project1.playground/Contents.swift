@@ -1,3 +1,4 @@
+// Set up players
 let player1: [String: String] = ["name": "Joe Smith",
                                  "height": "42",
                                  "experience": "YES",
@@ -106,9 +107,10 @@ let player18: [String: String] = ["name": "Herschel Krustofski",
                                   "guardians": "Hyman and Rachel Krustofski"
 ]
 
-
+// Set up league with all players
 let league = [player1, player2, player3, player4, player5, player6, player7, player8, player9, player10, player11, player12, player13, player14, player15, player16, player17, player18]
 
+// Set up needed variables
 var experiencedPlayers: [[String: String]] = []
 var inexperiencedPlayers: [[String: String]] = []
 var teamDragon: [[String: String]] = []
@@ -116,6 +118,7 @@ var teamRaptor: [[String: String]] = []
 var teamShark: [[String: String]] = []
 var teams = [teamDragon, teamRaptor, teamShark]
 
+// Add all experienced players to experiencedPlayers and all inexperienced players to inexperiencedPlayers
 for player in league {
     if player["experience"] == "YES" {
         experiencedPlayers.append(player)
@@ -124,18 +127,21 @@ for player in league {
     }
 }
 
-while experiencedPlayers.count >= 3 {
+// Divide experienced players
+while experiencedPlayers.count >= teams.count {
     teamDragon.append(experiencedPlayers.remove(at: 0))
     teamRaptor.append(experiencedPlayers.remove(at: 0))
     teamShark.append(experiencedPlayers.remove(at: 0))
 }
 
-while inexperiencedPlayers.count >= 3 {
+// Divide inexperienced players
+while inexperiencedPlayers.count >= teams.count {
     teamDragon.append(inexperiencedPlayers.remove(at: 0))
     teamRaptor.append(inexperiencedPlayers.remove(at: 0))
     teamShark.append(inexperiencedPlayers.remove(at: 0))
 }
 
+// Take teamName, team, and date of first practice and prints the letters to the console.
 func printTeam(teamName: String, team: [[String: String]], date: String) {
     var titleLine = ""
     for _ in 1...30 {
@@ -155,6 +161,7 @@ func printTeam(teamName: String, team: [[String: String]], date: String) {
     
 }
 
+// Call printTeam for each team with the appropriate date and name of the team
 printTeam(teamName: "Sharks", team: teamShark, date: "March 17, 3pm")
 printTeam(teamName: "Dragons", team: teamDragon, date: "March 17, 1pm")
 printTeam(teamName: "Raptors", team: teamRaptor, date: "March 18, 1pm")
